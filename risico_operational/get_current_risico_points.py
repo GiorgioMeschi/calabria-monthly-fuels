@@ -183,16 +183,16 @@ def pipeline(date):
         valid_months = [spi1_actualmonth, spi3_actualmonth, spi6_actualmonth, spi12_actualmonth]
         valid_years = [spi1_actualyear, spi3_actualyear, spi6_actualyear, spi12_actualyear]
         pairs = [(_aggr, _year, _month) for _aggr, _year, _month in zip(AGGREGATIONS, valid_years, valid_months)]
-        # for _aggr, _year, _month in pairs:
-        #     with mp.Pool(30) as p:
-        #         p.starmap(clip_to_tiles, [(_aggr, _year, _month, tile, tile_df_wgs, year, month)
-        #                                                                         for tile in tiles
-        #                                                                         ])
+        for _aggr, _year, _month in pairs:
+            with mp.Pool(30) as p:
+                p.starmap(clip_to_tiles, [(_aggr, _year, _month, tile, tile_df_wgs, year, month)
+                                                                                for tile in tiles
+                                                                                ])
 
             
-        # # get susceptibility map - includes already dynamic multiprocessing in the func
-        # logging.info(f'\nstart computiong susceptibility per tile\n')
-        # compute_susceptibility(years = [year], months = [month])
+        # get susceptibility map - includes already dynamic multiprocessing in the func
+        logging.info(f'\nstart computiong susceptibility per tile\n')
+        compute_susceptibility(years = [year], months = [month])
 
         # Merge susceptibility maps
         logging.info(f'\nget calabria susceptibility\n')
