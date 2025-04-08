@@ -10,8 +10,49 @@ import geopandas as gpd
 from rasterio.mask import mask as riomask
 import time
 import json
+import subprocess
+import boto3
+import logging 
 
 from risico_operational.settings import TILEPATH, SPI_DATA
+
+
+
+def download_spi(sh_file: str):
+
+    def assume_role(role_arn: str, session_name: str, duration_seconds: int = 3600) -> dict:
+        """
+        Calls AWS STS to assume the given role and returns temporary credentials.
+        """
+        sts_client = boto3.client("sts")
+        response = sts_client.assume_role(
+            RoleArn=role_arn,
+            RoleSessionName=session_name,
+            DurationSeconds=duration_seconds
+        )
+        return response["Credentials"]
+
+    # Parameters: adjust these as needed
+    role_arn = "arn:aws:iam::730335439410:role/giorgios-s3-reader"
+    session_name = "Accesso"
+
+    # Step 1: Assume the role and retrieve temporary credentials
+    credentials = assume_role(role_arn, session_name)
+    
+    # Step 2: Export credentials as environment variables (like your manual export commands)
+    os.environ["AWS_ACCESS_KEY_ID"] = credentials["AccessKeyId"]
+    os.environ["AWS_SECRET_ACCESS_KEY"] = credentials["SecretAccessKey"]
+    os.environ["AWS_SESSION_TOKEN"] = credentials["SessionToken"]
+    
+    logging.info("Temporary credentials acquired and exported to environment variables.")
+    
+    try:
+        subprocess.run(["bash", sh_file], check=True)
+        logging.info("download.sh executed successfully.")
+    except subprocess.CalledProcessError as e:
+        logging.info(f"An error occurred while running download.sh: {e}")
+
+
 
 def clip_to_tiles(aggr: list, year: int, month: int, tile: str, tile_df: gpd.GeoDataFrame,
                   current_year: int, current_month: int):

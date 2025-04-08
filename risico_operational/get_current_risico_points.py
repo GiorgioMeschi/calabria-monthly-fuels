@@ -38,8 +38,8 @@ print(f)
 
 from risico_operational.settings import DATAPATH, TILEPATH, SPI_DATA
 from model.run_model import compute_susceptibility
-from risico_operational.pipeline_functions import (clip_to_tiles, merge_susc_tiles, generate_fuel_map,
-                                write_risico_files, reproject_raster_as)
+from risico_operational.pipeline_functions import (download_spi, clip_to_tiles, merge_susc_tiles,
+                                                    generate_fuel_map, write_risico_files, reproject_raster_as)
                                 
 #%%
 
@@ -124,6 +124,11 @@ def pipeline(date):
     year = date.year
     month = date.month
     logging.info(f'Running for date: {date}')
+
+    #tring dowloading the latest data
+    sh_file = './risico_operational/download_spi.sh'
+    download_spi(sh_file)
+
 
     try:
         spi1_rawpath, found_date = find_latest(get_spi1_rawfile, date)
