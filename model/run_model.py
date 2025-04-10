@@ -3,7 +3,7 @@
 #%%
 
 from annual_wildfire_susceptibility.susceptibility import Susceptibility
-from risico_operational.settings import DATAPATH
+from risico_operational.settings import TILEPATH, DATAPATH
 
 import os
 import multiprocessing
@@ -46,7 +46,7 @@ CONFIG = {
     "email_pwd" : "" 
 }  
 
-WORKING_DIR = f'{BASEP}/ML/susceptibility/{VS}'
+WORKING_DIR = f'{TILEPATH}/susceptibility/{VS}'
 MODEL_PATH = f'{BASEP}/model/{VS}/RF_bilienarspi_100t_15d_15samples.sav'
 X_PATH = f"{BASEP}/model/{VS}/X_no_coords_clip.csv"
 
@@ -119,35 +119,33 @@ def compute_month_susceptibility(tile, year, month):
                                 'spi_12m',
                                 ]
     climate_foldername = 'climate' # climate_1m_shift
-    monthly_files = {f'{year}_{month}': {tiffile : f'{BASEP}/ML/{tile}/{climate_foldername}/{year}_{month}/{tiffile}_bilinear_epsg3857.tif'
+    monthly_files = {f'{year}_{month}': {tiffile : f'{TILEPATH}/{tile}/{climate_foldername}/{year}_{month}/{tiffile}_bilinear_epsg3857.tif'
                         for tiffile in monthly_variable_names}
                             }                         
 
-    dem_path = f"{BASEP}/ML/{tile}/dem/dem_20m_3857.tif"
-    veg_path = f"{BASEP}/ML/{tile}/veg/veg_20m_3857.tif"
+    dem_path = f"{TILEPATH}/{tile}/dem/dem_20m_3857.tif"
+    veg_path = f"{TILEPATH}/{tile}/veg/veg_20m_3857.tif"
     optional_input_dict = {}
 
     working_directory = f'{BASEP}/ML/{tile}/susceptibility/{VS}/{year}_{month}'
-    output_like = f'{working_directory}/susceptibility/annual_maps/Annual_susc_{year}_{month}.tif'
-    if not os.path.exists(output_like):
+    # output_like = f'{working_directory}/susceptibility/annual_maps/Annual_susc_{year}_{month}.tif'
+    # if not os.path.exists(output_like):
 
-        os.makedirs(working_directory, exist_ok=True)
-        susceptibility = Susceptibility(dem_path, veg_path, # mandatory vars
-                                        working_dir = working_directory,
-                                        optional_input_dict = optional_input_dict, # optional layers
-                                        config = CONFIG # configuration file
-                                        ) 
+    os.makedirs(working_directory, exist_ok=True)
+    susceptibility = Susceptibility(dem_path, veg_path, # mandatory vars
+                                    working_dir = working_directory,
+                                    optional_input_dict = optional_input_dict, # optional layers
+                                    config = CONFIG # configuration file
+                                    ) 
 
-        susceptibility.run_existed_model_annual(MODEL_PATH, 
-                                                annual_features_paths = monthly_files,
-                                                training_df_path = X_PATH,
-                                                start_year = f'{year}_{month}')
+    susceptibility.run_existed_model_annual(MODEL_PATH, 
+                                            annual_features_paths = monthly_files,
+                                            training_df_path = X_PATH,
+                                            start_year = f'{year}_{month}')
 
-        logging.info(f"Finished computing susceptibility for {tile} in {year}_{month}\n")
-        time.sleep(1)
+    logging.info(f"Finished computing susceptibility for {tile} in {year}_{month}\n")
+    time.sleep(1)
     
-    # else:
-    #     shutil.rmtree(working_directory)
 
 
 
@@ -210,7 +208,7 @@ def compute_susceptibility(years, months):
 
     # years = [YEAR] #list(range(2007, 2019)) 
     # months = [MONTH] #list(range(1, 13))  
-    tiles_dir = f'{BASEP}/ML'
+    tiles_dir = TILEPATH
     tiles = os.listdir(tiles_dir)
     tiles = [tile for tile in tiles if os.path.isdir(os.path.join(tiles_dir, tile))]
 
