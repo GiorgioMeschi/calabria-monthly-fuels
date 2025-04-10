@@ -137,28 +137,28 @@ def pipeline(date):
         spi1_actualmonth = found_date.strftime('%m')
         spi1_actualyear = found_date.strftime('%Y')
     except ValueError:
-        raise Exception("Could not find data for SSMI in the latest 90 days")
+        raise Exception("Could not find data for spi1 in the latest 90 days")
     
     try:
         spi3_rawpath, found_date = find_latest(get_spi3_rawfile, date)
         spi3_actualmonth = found_date.strftime('%m')
         spi3_actualyear = found_date.strftime('%Y')
     except ValueError:        
-        raise Exception("Could not find data for EDI in the latest 90 days")
+        raise Exception("Could not find data for spi3 in the latest 90 days")
     
     try:
         spi6_rawpath, found_date = find_latest(get_spi6_rawfile, date)
         spi6_actualmonth = found_date.strftime('%m')
         spi6_actualyear = found_date.strftime('%Y')
     except ValueError:        
-        raise Exception("Could not find data for Combined in the latest 90 days")
+        raise Exception("Could not find data for spi6 in the latest 90 days")
 
     try:
         spi12_rawpath, found_date = find_latest(get_spi12_rawfile, date)
         spi12_actualmonth = found_date.strftime('%m')
         spi12_actualyear = found_date.strftime('%Y')
     except ValueError:        
-        raise Exception("Could not find data for Combined in the latest 90 days")
+        raise Exception("Could not find data for spi12 in the latest 90 days")
 
     logging.info(f'''
     found 
