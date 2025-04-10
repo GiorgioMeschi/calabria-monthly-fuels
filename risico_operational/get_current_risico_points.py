@@ -34,6 +34,7 @@ f = os.path.dirname(
                             ))
                             
 sys.path.append(f)
+os.chdir(f)
 print(f)
 
 from risico_operational.settings import DATAPATH, TILEPATH, SPI_DATA
@@ -59,9 +60,9 @@ def get_spi1_rawfile(date):
     year = date.strftime('%Y')
     month = date.strftime('%m')
     base_folderpath = f'{SPI_DATA}/{aggr}/{year}/{month}'
-    if os.path.isdir(base_folderpath):
+    try:
         day_of_interest = os.listdir(base_folderpath)[-1]
-    else:
+    except:
         day_of_interest = None
     return f'{base_folderpath}/{day_of_interest}/CHIRPS2-SPI{aggr}_{year}{month}{day_of_interest}_tile4.tif'
 
@@ -71,9 +72,9 @@ def get_spi3_rawfile(date):
     month = date.strftime('%m')
     base_folderpath = f'{SPI_DATA}/{aggr}/{year}/{month}'
     # if isdir
-    if os.path.isdir(base_folderpath):
+    try:
         day_of_interest = os.listdir(base_folderpath)[-1]
-    else:
+    except:
         day_of_interest = None
     return f'{base_folderpath}/{day_of_interest}/CHIRPS2-SPI{aggr}_{year}{month}{day_of_interest}_tile4.tif'
 
@@ -82,9 +83,9 @@ def get_spi6_rawfile(date):
     year = date.strftime('%Y')
     month = date.strftime('%m')
     base_folderpath = f'{SPI_DATA}/{aggr}/{year}/{month}'
-    if os.path.isdir(base_folderpath):
+    try:
         day_of_interest = os.listdir(base_folderpath)[-1]
-    else:
+    except:
         day_of_interest = None
     return f'{base_folderpath}/{day_of_interest}/CHIRPS2-SPI{aggr}_{year}{month}{day_of_interest}_tile4.tif'
 
@@ -93,9 +94,9 @@ def get_spi12_rawfile(date):
     year = date.strftime('%Y')
     month = date.strftime('%m')
     base_folderpath = f'{SPI_DATA}/{aggr}/{year}/{month}'
-    if os.path.isdir(base_folderpath):
+    try:
         day_of_interest = os.listdir(base_folderpath)[-1]
-    else:
+    except:
         day_of_interest = None
     return f'{base_folderpath}/{day_of_interest}/CHIRPS2-SPI{aggr}_{year}{month}{day_of_interest}_tile4.tif'
 
@@ -126,6 +127,7 @@ def pipeline(date):
     logging.info(f'Running for date: {date}')
 
     #tring dowloading the latest data
+    print(os.getcwd())
     sh_file = './risico_operational/download_spi.sh'
     download_spi(sh_file)
 
@@ -253,7 +255,7 @@ if __name__ == '__main__':
     # get the current date
     date = dt.now()
 
-    log_filename = f'{OUTPUT_DIR}/pipeline_{date.strftime('%Y-%m-%d')}.log'
+    log_filename = f'{OUTPUT_DIR}/logs/pipeline_{date.strftime('%Y-%m-%d')}.log'
     os.makedirs(os.path.dirname(log_filename), exist_ok=True)
     logging.basicConfig(level=logging.INFO,
                         format = '[%(asctime)s] %(filename)s: {%(lineno)d} %(levelname)s - %(message)s',
