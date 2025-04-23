@@ -95,7 +95,8 @@ optional_input_dict = {
 
 
 # initialize che class
-CONFIG.update({'list_features_to_remove': ['veg_0']})
+CONFIG.update({'list_features_to_remove': ['veg_0'],
+               "batches" : 10})
 susceptibility = Susceptibility(dem_path, veg_path, # mandatory vars
                                 working_dir = working_dir,
                                 optional_input_dict = optional_input_dict, # optional layers
