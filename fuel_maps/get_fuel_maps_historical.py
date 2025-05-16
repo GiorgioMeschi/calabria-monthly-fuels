@@ -66,9 +66,8 @@ with mp.Pool(processes=6) as pool:
 
 
 vs = 'static'
-vs_tr = 'v4'
 susc_file = f'/home/sadc/share/project/calabria/data/susceptibility/{vs}/susceptibility/SUSCEPTIBILITY.tif'
-threashold_file = f'/home/sadc/share/project/calabria/data/susceptibility/{vs_tr}/thresholds/thresholds.json'
+threashold_file = f'/home/sadc/share/project/calabria/data/susceptibility/{vs}/thresholds/thresholds.json'
 thresholds = json.load(open(threashold_file))
 tr1, tr2 = thresholds['lv1'], thresholds['lv2']
 veg_path = '/home/sadc/share/project/calabria/data/raw/vegetation/vegetation_ml.tif'
@@ -82,7 +81,7 @@ os.makedirs(ft_outfolder, exist_ok=True)
 
 
 
-hazard_filename = 'FUEL_MAP.tif'
+hazard_filename = 'FUEL_MAP_v2.tif'
 inputs = dict(
     susc_path = susc_file,
     thresholds= [tr1, tr2],
@@ -93,14 +92,11 @@ inputs = dict(
 
 _, susc_class, ft_arr = fft.hazard_12cl_assesment(**inputs)
 # save
-susc_filename = 'susc_3classes.tif'
+susc_filename = 'susc_3classes_v2.tif'
 Raster.save_raster_as(susc_class, 
                         f'{susc_class_oufolder}/{susc_filename}',
                         susc_file, dtype = np.int8(), nodata =0)
 
-Raster.save_raster_as(susc_class, 
-                        f'{susc_class_oufolder}/{susc_filename}',
-                        susc_file, dtype = np.int8(), nodata =0)
 ft_filename = 'ft.tif'
 Raster.save_raster_as(ft_arr,
                         f'{ft_outfolder}/{ft_filename}',
