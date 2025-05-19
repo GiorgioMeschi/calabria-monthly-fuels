@@ -127,7 +127,7 @@ def pipeline(date):
     logging.info(f'Running for date: {date}')
 
     #tring dowloading the latest data
-    print(os.getcwd())
+    print(os.getcwd()) 
     sh_file = './risico_operational/download_spi.sh'
     download_spi(sh_file)
 
@@ -207,8 +207,8 @@ def pipeline(date):
 
         # Generate fuel maps
         logging.info(f'\nget fuel map\n')
-        veg_path = f'{VEG_CAL_DIR}/vegetation_ml.tif'
-        mapping_path = f'{VEG_CAL_DIR}/veg_to_tf.json'
+        veg_path = f'{VEG_CAL_DIR}/fuel_type.tif'
+        mapping_path = f'{VEG_CAL_DIR}/veg_to_tf_fake.json'
         threashold_file = f'{SUSC_THRESHOLD_DIR}/thresholds.json'
         generate_fuel_map(merged_susc_file, threashold_file, veg_path, mapping_path, 
                            out_file = fuel12cl_path)

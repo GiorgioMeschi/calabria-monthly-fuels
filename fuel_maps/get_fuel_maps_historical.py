@@ -10,18 +10,19 @@ Raster = gt.Raster()
 
 #%%
 
-vs = 'v4'
-folder_susc = f'/home/sadc/share/project/calabria/data/susceptibility/{vs}'
+vs_susc = 'v4'
+vs_fuel = 'v4_fixed' # change the aggregation file veg to FT
+folder_susc = f'/home/sadc/share/project/calabria/data/susceptibility/{vs_susc}'
 susc_names = [i for i in os.listdir(folder_susc) if i.endswith('.tif')]
-threashold_file = f'/home/sadc/share/project/calabria/data/susceptibility/{vs}/thresholds/thresholds.json'
+threashold_file = f'/home/sadc/share/project/calabria/data/susceptibility/{vs_susc}/thresholds/thresholds.json'
 thresholds = json.load(open(threashold_file))
 tr1, tr2 = thresholds['lv1'], thresholds['lv2']
-veg_path = '/home/sadc/share/project/calabria/data/raw/vegetation/vegetation_ml.tif'
-mapping_path = '/home/sadc/share/project/calabria/data/raw/vegetation/veg_to_tf.json'
-out_folder = f'/home/sadc/share/project/calabria/data/fuel_maps/{vs}'
+veg_path = '/home/sadc/share/project/calabria/data/raw/vegetation/fuel_type.tif'
+mapping_path = '/home/sadc/share/project/calabria/data/raw/vegetation/veg_to_tf_fake.json' # already the input is with aggregation
+out_folder = f'/home/sadc/share/project/calabria/data/fuel_maps/{vs_fuel}'
 os.makedirs(out_folder, exist_ok=True)
-susc_class_oufolder = f'/home/sadc/share/project/calabria/data/susceptibility/{vs}/susc_classified'
-ft_outfolder = f'/home/sadc/share/project/calabria/data/fuel_type_4cl/{vs}'
+susc_class_oufolder = f'/home/sadc/share/project/calabria/data/susceptibility/{vs_susc}/susc_classified'
+ft_outfolder = f'/home/sadc/share/project/calabria/data/fuel_type_4cl/{vs_fuel}'
 os.makedirs(susc_class_oufolder, exist_ok=True)
 os.makedirs(ft_outfolder, exist_ok=True)
 
@@ -63,25 +64,25 @@ with mp.Pool(processes=6) as pool:
 
 #%% get the static fuel map
 
+vs_susc = 'static'
+vs_fuel = 'static_fixed' # change the aggregation file veg to FT
 
-
-vs = 'static'
-susc_file = f'/home/sadc/share/project/calabria/data/susceptibility/{vs}/susceptibility/SUSCEPTIBILITY.tif'
-threashold_file = f'/home/sadc/share/project/calabria/data/susceptibility/{vs}/thresholds/thresholds.json'
+susc_file = f'/home/sadc/share/project/calabria/data/susceptibility/{vs_susc}/susceptibility/SUSCEPTIBILITY.tif'
+threashold_file = f'/home/sadc/share/project/calabria/data/susceptibility/{vs_susc}/thresholds/thresholds.json'
 thresholds = json.load(open(threashold_file))
 tr1, tr2 = thresholds['lv1'], thresholds['lv2']
-veg_path = '/home/sadc/share/project/calabria/data/raw/vegetation/vegetation_ml.tif'
-mapping_path = '/home/sadc/share/project/calabria/data/raw/vegetation/veg_to_tf.json'
-out_folder = f'/home/sadc/share/project/calabria/data/fuel_maps/{vs}'
+veg_path = '/home/sadc/share/project/calabria/data/raw/vegetation/fuel_type.tif'
+mapping_path = '/home/sadc/share/project/calabria/data/raw/vegetation/veg_to_tf_fake.json' # already the input is with aggregation
+out_folder = f'/home/sadc/share/project/calabria/data/fuel_maps/{vs_fuel}'
 os.makedirs(out_folder, exist_ok=True)
-susc_class_oufolder = f'/home/sadc/share/project/calabria/data/susceptibility/{vs}/susc_classified'
-ft_outfolder = f'/home/sadc/share/project/calabria/data/fuel_type_4cl/{vs}'
+susc_class_oufolder = f'/home/sadc/share/project/calabria/data/susceptibility/{vs_susc}/susc_classified'
+ft_outfolder = f'/home/sadc/share/project/calabria/data/fuel_type_4cl/{vs_fuel}'
 os.makedirs(susc_class_oufolder, exist_ok=True)
 os.makedirs(ft_outfolder, exist_ok=True)
 
 
 
-hazard_filename = 'FUEL_MAP_v2.tif'
+hazard_filename = 'FUEL_MAP.tif'
 inputs = dict(
     susc_path = susc_file,
     thresholds= [tr1, tr2],
@@ -92,7 +93,7 @@ inputs = dict(
 
 _, susc_class, ft_arr = fft.hazard_12cl_assesment(**inputs)
 # save
-susc_filename = 'susc_3classes_v2.tif'
+susc_filename = 'susc_3classes.tif'
 Raster.save_raster_as(susc_class, 
                         f'{susc_class_oufolder}/{susc_filename}',
                         susc_file, dtype = np.int8(), nodata =0)
@@ -103,3 +104,5 @@ Raster.save_raster_as(ft_arr,
                         susc_file, dtype = np.int8(), nodata =0)
 
 
+
+# %%
